@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <input type="text" id='input' /><button id='add'>add</button>
+    <ul id='list'>
+    </ul>
+    <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+    <script>
+        $(function () {
+            let globalData = {
+                list: [{ id: 1, name: '做作业' }, { id: 2, name: '看电影' }]
+            }
+            //渲染list
+            const renderList = (() => {
+                const ul = $('ul')
+                let str = ''
+                globalData.list.forEach(item => {
+                    str +=
+                        `<li>
+                            <span>${item.name}</span>
+                            <button class="finish" data-id="${item.id}">完成</button>
+                        </li>`
+                })
+                ul.html(str)
+                //完成
+                $('.finish').on('click', function (event) {
+                    const id = $(this).attr('data-id');
+                    globalData.list = globalData.list.filter(item => item.id != id);
+                    renderList()
+                })
+            })
+            renderList(list)
+            //寻找最大的id
+            const findMaxId = () => {
+                let id = 0;
+                globalData.list.forEach(item => {
+                    if (item.id > id) id = item.id
+                })
+                return id
+            }
+            //新增
+            $('#add').on('click', () => {
+                const value = $('#input').val()//input框的值
+                if (value !== '') {
+                    globalData.list.push({ id: findMaxId()+1, name: value})
+                    renderList()
+                }
+                $('#input').val('')//清空
+            })
+        })
+    </script>
+</body>
+
+</html>
